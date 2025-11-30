@@ -4,12 +4,7 @@ interface StoredUser extends User {
     password?: string; // Optional for backward compatibility with mocks if needed, but we'll set it.
 }
 
-const MOCK_USERS: StoredUser[] = [
-    { id: 'u1', name: 'Alice', avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice', password: 'password' },
-    { id: 'u2', name: 'Bob', avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob', password: 'password' },
-    { id: 'u3', name: 'Charlie', avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie', password: 'password' },
-    { id: 'u4', name: 'Dave', avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dave', password: 'password' },
-];
+const MOCK_USERS: StoredUser[] = [];
 
 const STORAGE_KEY_USERS = 'praise_app_users';
 const STORAGE_KEY_CURRENT_USER = 'praise_app_current_user';
