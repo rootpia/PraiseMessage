@@ -1,6 +1,4 @@
 import type { User } from '../types';
-import { auth, githubProvider } from '../lib/firebase';
-import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 
 const MOCK_USERS: User[] = [
     { id: 'u1', name: 'Alice', avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice' },
@@ -8,6 +6,8 @@ const MOCK_USERS: User[] = [
     { id: 'u3', name: 'Charlie', avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie' },
     { id: 'u4', name: 'Dave', avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dave' },
 ];
+
+const STORAGE_KEY_CURRENT_USER = 'praise_app_current_user';
 
 export const userService = {
     getUsers: (): User[] => {
@@ -18,53 +18,20 @@ export const userService = {
         return MOCK_USERS.find(u => u.id === id);
     },
 
-    loginWithGithub: async (): Promise<User | null> => {
-        try {
-            const result = await signInWithPopup(auth, githubProvider);
-            const user = result.user;
-            return {
-                id: user.uid,
-                name: user.displayName || 'Anonymous',
-                avatarUrl: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`
-            };
-        } catch (error) {
-            console.error("Login failed", error);
-            return null;
-        }
-    },
-
-    logout: async () => {
-        await signOut(auth);
-    },
-
-    // Note: This is a synchronous check for the current user from auth state, 
-    // but Firebase auth state is asynchronous. 
-    // For a real app, we should use a context or hook to manage auth state.
-    // For this refactor, we'll keep the signature but it might return null initially.
-    getCurrentUser: (): User | null => {
-        const user = auth.currentUser;
+    login: (userId: string): User | undefined => {
+        const user = MOCK_USERS.find(u => u.id === userId);
         if (user) {
-            return {
-                id: user.uid,
-                name: user.displayName || 'Anonymous',
-                avatarUrl: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`
-            };
+            localStorage.setItem(STORAGE_KEY_CURRENT_USER, JSON.stringify(user));
         }
-        return null;
+        return user;
     },
 
-    // Helper to subscribe to auth changes
-    onAuthStateChanged: (callback: (user: User | null) => void) => {
-        return onAuthStateChanged(auth, (firebaseUser) => {
-            if (firebaseUser) {
-                callback({
-                    id: firebaseUser.uid,
-                    name: firebaseUser.displayName || 'Anonymous',
-                    avatarUrl: firebaseUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${firebaseUser.uid}`
-                });
-            } else {
-                callback(null);
-            }
-        });
+    logout: () => {
+        localStorage.removeItem(STORAGE_KEY_CURRENT_USER);
+    },
+
+    getCurrentUser: (): User | null => {
+        const stored = localStorage.getItem(STORAGE_KEY_CURRENT_USER);
+        return stored ? JSON.parse(stored) : null;
     }
 };
