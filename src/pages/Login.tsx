@@ -2,13 +2,12 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { userService } from '../services/userService';
 
 export default function Login() {
-    const users = userService.getUsers();
     const navigate = useNavigate();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { setUser } = useOutletContext<any>();
 
-    const handleLogin = (userId: string) => {
-        const user = userService.login(userId);
+    const handleGithubLogin = async () => {
+        const user = await userService.loginWithGithub();
         if (user) {
             setUser(user);
             navigate('/');
@@ -17,18 +16,14 @@ export default function Login() {
 
     return (
         <div className="flex flex-col items-center justify-center py-12">
-            <h2 className="text-3xl font-extrabold text-gray-900 mb-8">Select a User to Login</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {users.map((user) => (
-                    <button
-                        key={user.id}
-                        onClick={() => handleLogin(user.id)}
-                        className="bg-white overflow-hidden shadow rounded-lg p-6 hover:shadow-md transition-shadow flex flex-col items-center"
-                    >
-                        <img className="h-20 w-20 rounded-full mb-4" src={user.avatarUrl} alt={user.name} />
-                        <h3 className="text-lg font-medium text-gray-900">{user.name}</h3>
-                    </button>
-                ))}
+            <h2 className="text-3xl font-extrabold text-gray-900 mb-8">Sign in to Praise Message</h2>
+            <div className="w-full max-w-md">
+                <button
+                    onClick={handleGithubLogin}
+                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    Sign in with GitHub
+                </button>
             </div>
         </div>
     );

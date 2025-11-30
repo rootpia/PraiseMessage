@@ -8,11 +8,14 @@ export default function Layout() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setUser(userService.getCurrentUser());
+        const unsubscribe = userService.onAuthStateChanged((user) => {
+            setUser(user);
+        });
+        return () => unsubscribe();
     }, []);
 
-    const handleLogout = () => {
-        userService.logout();
+    const handleLogout = async () => {
+        await userService.logout();
         setUser(null);
         navigate('/login');
     };
@@ -24,7 +27,7 @@ export default function Layout() {
                     <div className="flex justify-between h-16">
                         <div className="flex">
                             <Link to="/" className="flex-shrink-0 flex items-center font-bold text-xl text-indigo-600">
-                                Praise Card
+                                Praise Message
                             </Link>
                         </div>
                         <div className="flex items-center space-x-4">
