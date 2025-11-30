@@ -4,7 +4,15 @@ interface StoredUser extends User {
     password?: string; // Optional for backward compatibility with mocks if needed, but we'll set it.
 }
 
-const MOCK_USERS: StoredUser[] = [];
+const MOCK_USERS: StoredUser[] = [
+    {
+        id: 'master',
+        name: 'admin',
+        avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin',
+        password: 'admin-admin',
+        role: 'admin'
+    }
+];
 
 const STORAGE_KEY_USERS = 'praise_app_users';
 const STORAGE_KEY_CURRENT_USER = 'praise_app_current_user';
@@ -14,6 +22,13 @@ const initializeUsers = () => {
     const stored = localStorage.getItem(STORAGE_KEY_USERS);
     if (!stored) {
         localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(MOCK_USERS));
+    } else {
+        // Ensure master user always exists
+        const users: StoredUser[] = JSON.parse(stored);
+        if (!users.some(u => u.id === 'admin')) {
+            users.push(MOCK_USERS[0]);
+            localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
+        }
     }
 };
 
@@ -49,7 +64,8 @@ export const userService = {
             id: 'u' + Date.now().toString(),
             name,
             avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
-            password
+            password,
+            role: 'user'
         };
 
         users.push(newUser);

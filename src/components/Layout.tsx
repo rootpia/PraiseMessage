@@ -32,7 +32,11 @@ export default function Layout() {
                                 <>
                                     <span className="text-sm text-gray-500">Hi, {user.name}</span>
                                     <Link to="/" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Dashboard</Link>
-                                    <Link to="/send" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Send Praise</Link>
+                                    {user.role === 'admin' ? (
+                                        <Link to="/settings" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Settings</Link>
+                                    ) : (
+                                        <Link to="/send" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Send Praise</Link>
+                                    )}
                                     <button onClick={handleLogout} className="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium">Logout</button>
                                 </>
                             ) : (
