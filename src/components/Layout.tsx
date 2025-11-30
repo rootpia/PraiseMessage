@@ -24,7 +24,7 @@ export default function Layout() {
                     <div className="flex justify-between h-16">
                         <div className="flex">
                             <Link to="/" className="flex-shrink-0 flex items-center font-bold text-xl text-indigo-600">
-                                Praise Card
+                                Praise Message
                             </Link>
                         </div>
                         <div className="flex items-center space-x-4">
