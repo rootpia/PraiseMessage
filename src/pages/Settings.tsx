@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { settingsService } from '../services/settingsService';
-import { AppSettings } from '../types';
+import type { AppSettings } from '../types';
 
 export default function Settings() {
     const [settings, setSettings] = useState<AppSettings>(settingsService.getSettings());
