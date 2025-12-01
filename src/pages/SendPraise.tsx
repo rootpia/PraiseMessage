@@ -22,6 +22,10 @@ export default function SendPraise() {
             navigate('/login');
             return;
         }
+        if (user.role === 'admin') {
+            navigate('/');
+            return;
+        }
         setCurrentUser(user);
         setUsers(userService.getUsers().filter(u => u.id !== user.id));
         setImages(imageService.getImages());

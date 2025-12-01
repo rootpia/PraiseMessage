@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { userService } from '../services/userService';
 import { messageService } from '../services/messageService';
 import { imageService } from '../services/imageService';
-import type { PraiseMessage, User } from '../types';
+import { settingsService } from '../services/settingsService';
+import type { PraiseMessage, User, AppSettings } from '../types';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
     const [messages, setMessages] = useState<PraiseMessage[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [settings, setSettings] = useState<AppSettings>(settingsService.getSettings());
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,6 +20,7 @@ export default function Dashboard() {
         }
         setCurrentUser(user);
         setMessages(messageService.getMessagesForUser(user.id));
+        setSettings(settingsService.getSettings());
     }, [navigate]);
 
     if (!currentUser) return null;
@@ -41,11 +44,15 @@ export default function Dashboard() {
                                 )}
                                 <div className="p-4">
                                     <div className="flex items-center mb-4">
-                                        {sender && (
+                                        {settings.showSenderName && sender && (
                                             <img className="h-10 w-10 rounded-full mr-3" src={sender.avatarUrl} alt={sender.name} />
                                         )}
                                         <div>
-                                            <p className="text-sm font-medium text-gray-900">{sender?.name || 'Unknown'}</p>
+                                            {settings.showSenderName ? (
+                                                <p className="text-sm font-medium text-gray-900">{sender?.name || 'Unknown'}</p>
+                                            ) : (
+                                                <p className="text-sm font-medium text-gray-900">Someone</p>
+                                            )}
                                             <p className="text-xs text-gray-500">{new Date(msg.timestamp).toLocaleString()}</p>
                                         </div>
                                     </div>
